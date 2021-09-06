@@ -1,0 +1,6 @@
+{
+	"appId": "com.explanation.vizz",
+	"appName": "vizz",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}
