@@ -1,5 +1,4 @@
-export const wait = async (ms: number): Promise<number> => {
-	new Promise((resolve, _reject) => {
-		setTimeout(resolve, ms)
-	})
-}
+export * from './common';
+export * from './dom';
+export * from './svelte';
+

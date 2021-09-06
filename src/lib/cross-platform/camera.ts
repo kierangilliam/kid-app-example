@@ -1,8 +1,9 @@
 import type { Photo } from '@capacitor/camera';
-import { Camera, CameraResultType } from '@capacitor/camera';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 export const takePicture = async (): Promise<Photo> => {
 	const image = await Camera.getPhoto({
+		source: CameraSource.Camera,
 		quality: 90,
 		allowEditing: true,
 		resultType: CameraResultType.Uri
