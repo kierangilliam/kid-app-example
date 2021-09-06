@@ -25,7 +25,10 @@
   },
   "type": "module",
   "dependencies": {
+    "@capacitor/camera": "^1.0.5",
     "@capacitor/core": "^3.2.2",
+    "@capacitor/device": "^1.0.3",
+    "@capacitor/haptics": "^1.0.3",
     "@capacitor/ios": "^3.2.2"
   }
 }
