@@ -4,7 +4,7 @@
 
 <script lang='ts'>
 	import { goto } from '$app/navigation';
-	import { Microphone, CategoryPreview } from '$lib/components';
+	import { Microphone, CategoryPreview, Camera, FoldedPaperEffect } from '$lib/components';
 	import { takePicture } from '$lib/cross-platform';
 	import { getCategoryPreviews } from '$lib/state';
 	import { Spacer } from '@ollopa/cedar';
@@ -25,25 +25,31 @@
 </script>
 
 <route-main>
-	<button on:click={onCameraClick}>camera</button>
-
-	<Spacer s={32} />
+	<!-- Make room for Camera and Microphone -->
+	<Spacer s={48} />
 
 	{#if $collections.state === 'loading'}
 		...loading
 	{:else if $collections.state === 'ready'}
-		<section class="collections">
-			{#each $collections.data as collection, i}
-				<CategoryPreview 
-					on:click={onCollectionClick}
-					{collection} 
-					transitionDelay={i * 250} 
-				/>
-			{/each}
-		</section>
+		<FoldedPaperEffect>
+			<section class="collections">
+				{#each $collections.data as collection, i}
+					<CategoryPreview 
+						on:click={onCollectionClick}
+						{collection} 
+						transitionDelay={i * 250} 
+					/>
+				{/each}
+			</section>
+		</FoldedPaperEffect>
 	{/if}
 
 	<Microphone on:click={onMicrophoneClick} />
+	<Camera 
+		--size={'150px'}
+		--z-index={100}
+		on:click={onCameraClick} 
+	/>
 </route-main>
 
 <style>

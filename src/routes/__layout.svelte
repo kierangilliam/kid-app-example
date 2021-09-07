@@ -13,7 +13,6 @@
 </script>
 
 <Theme>
-	<p style="color: white">{path}</p>
 	<RouteTransition refresh={path}>
 		<slot />
 	</RouteTransition>

@@ -23,7 +23,7 @@
 			const link = document.createElement('div')
 
 			link.style.width = `${linkSize}px`
-			link.style.height = `${linkSize / 3}px`
+			link.style.height = `${linkSize / 6}px`
 			link.classList.add('link-physics-body')
 
 			container.appendChild(link)
@@ -97,7 +97,7 @@
 			let chainLink: Body
 
 			if (i == numberOfLinks - 1) {
-				chainLink = Bodies.rectangle(x - 20, y, linkSize * 2, linkSize * 4, {
+				chainLink = Bodies.rectangle(x - 20, y, linkSize * 3, linkSize * 5, {
 					collisionFilter: { group }, 
 					angle: Math.PI / 2,
 				});

@@ -1,36 +1,16 @@
 <script lang='ts'>
 	import { receive, send } from '$lib/animations/crossfade';
 	import type { CollectionPreview } from '$lib/state'
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 	import { fly } from 'svelte/transition';
 
 	export let collection: CollectionPreview
 	export let transitionDelay: number
 
-	let container 
-
 	$: ({ id, name, imageUrl } = collection)
 
 	const dispatch = createEventDispatcher()
 
-	onMount(() => {
-		// @ts-ignore
-		var folded = new OriDomi(container,  {
-			vPanels:          5,    // number of panels when folding left or right (vertically oriented)
-			speed:            1200, // folding duration in ms
-			shadingIntensity: 3,    // lessen the shading effect
-			maxAngle:         40,   // keep the user's folds within a range of -40 to 40 degrees
-		});
-
-		folded.reveal(100);
-		
-		setTimeout(() => {
-			folded.reveal(10)
-		}, (700 * Math.random()) + 1200)
-
-		console.log({ folded })
-
-	})
 
 	const onClick = () => {
 		dispatch('click', { id: collection.id })
@@ -42,10 +22,7 @@
 	on:click={onClick}
 	in:fly={{ x: 100, delay: transitionDelay }}
 >
-	<div
-		class='image'
-		bind:this={container}
-	>
+	<div class='wrapper'>
 		<img 
 			in:send={{ key: `collection-image-${id}` }}
 			out:send={{ key: `collection-image-${id}` }}
@@ -54,7 +31,7 @@
 		>
 	</div>
 
-	<div class='title'>
+	<div class='title wrapper'>
 		<h2
 			in:receive={{ key: `collection-title-${id}`}}
 			out:send={{ key: `collection-title-${id}`}}
@@ -72,17 +49,13 @@
 		align-self: center;
 	}
 
-	.image, .title {
+	.wrapper {
 		display: flex;
 		justify-content: center;
 	}
 
 	.title {
-		margin-top: var(--s-4);
-	}
-
-	.image {
-		background-color: var(--white);
+		margin: var(--s-4) 0;
 	}
 
 	h2 {
@@ -95,5 +68,16 @@
 
 	img {
 		max-height: 200px;
+		--stroke-pos: 3px;
+		--stroke-neg: -3px;
+		--stroke-color: var(--white);
+		filter: drop-shadow(var(--stroke-pos) 0 0 var(--stroke-color)) 
+			drop-shadow(var(--stroke-neg) 0 var(--stroke-color))
+			drop-shadow(0 var(--stroke-pos) 0 var(--stroke-color))
+			drop-shadow(0 var(--stroke-neg) 0 var(--stroke-color))
+			drop-shadow(var(--stroke-pos) var(--stroke-pos) 0 var(--stroke-color)) 
+			drop-shadow(var(--stroke-pos) var(--stroke-neg) 0 var(--stroke-color))
+			drop-shadow(var(--stroke-neg) var(--stroke-pos) 0 var(--stroke-color))
+			drop-shadow(var(--stroke-neg) var(--stroke-neg) 0 var(--stroke-color)); 
 	}
 </style>

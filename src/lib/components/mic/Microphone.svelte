@@ -20,9 +20,9 @@
 	recognition.onspeechend = (e) => {
 		transcribing = false
 
-		setTimeout(() => {
-			transcription = ''
-		}, 2000)
+		// NOTE: where `dispatch('question', { transcription })` would be called
+
+		setTimeout(() => transcription = '', 2000)
 	}
 
 	recognition.onresult = (e) => {
@@ -43,7 +43,6 @@
 	}
 </script>
 
-{transcription}
 {#if transcription}
 	<div class='transcription'>
 		{#each transcription.split(' ') as word, i}
@@ -55,7 +54,7 @@
 {/if}
 
 <MicrophonePhysicsBody 
-	linkSize={50}
+	linkSize={40}
 	numberOfLinks={4}
 	linkColor={transcribing ? COLORS.white : COLORS.black}
 	on:pointerup={onUp} 
