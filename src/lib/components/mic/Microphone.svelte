@@ -1,15 +1,14 @@
 <script lang='ts'>
-	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
-	import { bounceOut } from 'svelte/easing';
-	import MicrophonePhysicsBody from '$lib/Rope.svelte';
+	import MicrophonePhysicsBody from './PhysicsBody.svelte';
+	import { COLORS } from '$lib/constants';
 
-	let visible = false
 	let transcription = ''
 	let transcribing = false
 
-	// @ts-ignore
-	const SpeechRecognition: typeof window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+	const SpeechRecognition: typeof window.SpeechRecognition = window.SpeechRecognition 
+		// @ts-ignore
+		|| window.webkitSpeechRecognition
 	const recognition = new SpeechRecognition()
 	recognition.interimResults = true
 
@@ -27,22 +26,26 @@
 	}
 
 	recognition.onresult = (e) => {
-		console.log('transcriptin confidence', e.results[e.resultIndex][0].confidence)
-
-		transcription = e.results[e.resultIndex][0].transcript
+		const { confidence, transcript } = e.results[e.resultIndex][0]
+		console.log('transcriptin confidence', confidence)
+		transcription = transcript
+		
+		if (e.results[e.resultIndex].isFinal)
+			transcription += '?'
 	}
 
 	const onDown = () => {
 		recognition.start()
 	}
 
-	onMount(() => {
-		visible = true
-	})
+	const onUp = () => {
+		recognition.stop()
+	}
 </script>
 
+{transcription}
 {#if transcription}
-	<div class="transcription">
+	<div class='transcription'>
 		{#each transcription.split(' ') as word, i}
 			<div transition:fly={{ y: -20, x: 5, delay: i * 50 }}>
 				{word}
@@ -51,35 +54,26 @@
 	</div>
 {/if}
 
-{#if visible}
-	<div 
-		class='container' 
-		on:pointerdown={onDown}
-		style='width: {800}px; height: {200}px'
-	>
-		<MicrophonePhysicsBody width={800} height={400} />
-	</div>
-{/if}
+<MicrophonePhysicsBody 
+	linkSize={50}
+	numberOfLinks={4}
+	linkColor={transcribing ? COLORS.white : COLORS.black}
+	on:pointerup={onUp} 
+	on:pointerdown={onDown} 
+/>
 
 <style>
 	.transcription {
 		position: absolute;
 		width: 100%;
+		top: 0;
 		display: flex;
 		justify-content: center;
 		font-weight: var(--weightBolder);
 		font-size: var(--h1);
+		color: var(--white);
 	}
 	.transcription div {
 		margin: 0 var(--s-1);
-	}
-
-	.container {
-		position: fixed;
-		--size: 125px;
-		width: var(--size);
-		height: var(--size);
-		top: 0;
-		right: 20vw;
 	}
 </style>
