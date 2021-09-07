@@ -19,31 +19,49 @@ interface Topic {
 	name: string
 }
 
-export interface Collection {
+export interface Category {
 	id: string
 	name: string
 	imageUrl: string
 	topics: Topic[]
 }
 
-export type CollectionPreview = Pick<Collection, 'id' | 'imageUrl' | 'name'>
+export type CollectionPreview = Pick<Category, 'id' | 'imageUrl' | 'name'>
 
-const collectionsMockData: Collection[] = [
+const collectionsMockData: Category[] = [
 	{
 		id: 'b',
 		name: 'felines',
-		imageUrl: 'felines.png',
+		imageUrl: 'cat.png',
 		topics: [],
 	},
 	{
 		id: 'a',
 		name: 'firetrucks',
-		imageUrl: 'firetrucks.png',
+		imageUrl: 'firetruck.png',
+		topics: [],
+	},
+	{
+		id: 'a',
+		name: 'technology',
+		imageUrl: 'computer.png',
+		topics: [],
+	},
+	{
+		id: 'a',
+		name: 'dinosaurs',
+		imageUrl: 'dinosaur.png',
+		topics: [],
+	},
+	{
+		id: 'a',
+		name: 'science',
+		imageUrl: 'flask.png',
 		topics: [],
 	},
 ]
 
-export const getCollectionPreviews = (): Readable<ResourceState<CollectionPreview[], string>> => {
+export const getCategoryPreviews = (): Readable<ResourceState<CollectionPreview[], string>> => {
 	const { subscribe, set } = writable<ResourceState<CollectionPreview[], string>>({ state: 'loading' })
 
 	const fetchData = async () => {
@@ -59,8 +77,8 @@ export const getCollectionPreviews = (): Readable<ResourceState<CollectionPrevie
 	return { subscribe }
 }
 
-export const getCollection = (id: string): Readable<ResourceState<Collection, string>> => {
-	const { subscribe, set } = writable<ResourceState<Collection, string>>({ state: 'loading' })
+export const getCategory = (id: string): Readable<ResourceState<Category, string>> => {
+	const { subscribe, set } = writable<ResourceState<Category, string>>({ state: 'loading' })
 
 	const fetchData = async () => {
 		// perform some network request..

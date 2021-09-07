@@ -4,13 +4,12 @@
 
 <script lang='ts'>
 	import { goto } from '$app/navigation';
-	import CollectionPreview from '$lib/components/collections/CollectionPreview.svelte';
-	import { Microphone } from '$lib/components';
+	import { Microphone, CategoryPreview } from '$lib/components';
 	import { takePicture } from '$lib/cross-platform';
-	import { getCollectionPreviews } from '$lib/state';
+	import { getCategoryPreviews } from '$lib/state';
 	import { Spacer } from '@ollopa/cedar';
 
-	const collections = getCollectionPreviews()
+	const collections = getCategoryPreviews()
 
 	const onMicrophoneClick = async () => {
 		throw new Error('TODO')
@@ -21,7 +20,7 @@
 	}
 
 	const onCollectionClick = ({ detail: { id } }) => {
-		goto(`/collections/${id}`)
+		goto(`/categories/${id}`)
 	}
 </script>
 
@@ -37,7 +36,7 @@
 	{:else if $collections.state === 'ready'}
 		<section class="collections">
 			{#each $collections.data as collection, i}
-				<CollectionPreview 
+				<CategoryPreview 
 					on:click={onCollectionClick}
 					{collection} 
 					transitionDelay={i * 250} 
@@ -51,10 +50,8 @@
 	section {
 		margin: var(--s-8); 
 		padding: var(--s-6);
-		background: linear-gradient(85deg, 
-			rgba(0, 0, 0, 0) 1%, var(--sectionBackgroundColor) 1%,
-			var(--sectionBackgroundColor) 99%, rgba(0, 0, 0, 0) 99%
-		);
+		background: var(--sectionBackgroundColor);
+		transform: skew(1deg);
 	}
 
 	.collections {

@@ -1,19 +1,17 @@
 <script>
-	import { receive, send } from "$lib/animations/crossfade";
+	import { receive, send } from '$lib/animations/crossfade';
 	import { goto } from '$app/navigation';
-	import { page } from "$app/stores";
-	import { getCollection } from "$lib/state";
+	import { page } from '$app/stores';
+	import { getCategory } from '$lib/state';
 
 	$: id = $page.params.collection
-	$: collection = getCollection(id)
-
-
+	$: collection = getCategory(id)
 </script>
 
 <route-main>
 	<button on:click={() => goto('/')}>home</button>
 
-	<img in:receive={{ key: `collection-image-${id}` }} src="abc" alt="">
+	<img in:receive={{ key: `collection-image-${id}` }} src='abc' alt=''>
 
 	{#if $collection.state === 'loading'}
 		...
