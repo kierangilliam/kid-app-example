@@ -1,6 +1,7 @@
 <script lang='ts'>
-	import { Render, Composites, Composite, Constraint, MouseConstraint, Engine, Runner, Body, Mouse, Bodies,  } from 'matter-js'
+	import { Render, Composites, World, Composite, Constraint, MouseConstraint, Engine, Runner, Body, Mouse, Bodies,  } from 'matter-js'
 	import { onDestroy, onMount } from 'svelte';
+	import { range } from './utils';
 
 	export let width: number
 	export let height: number
@@ -8,13 +9,63 @@
 	let container: HTMLDivElement
 	let stop: () => void
 
+	const numberOfLinks = 3
+
 	onMount(() => {
-		stop = chains(container).stop
+		// stop = chains(container).stop
+
+		const links = range(numberOfLinks).map(_ => {
+			const link = document.createElement('div')
+			link.classList.add('link-physics-body')
+			container.appendChild(link)
+			return link
+		})
+
+		createLinks(links)
 	})
 
 	onDestroy(() => {
 		if (stop) stop()	
 	})
+
+	const createLinks = (links: HTMLElement[]) => {
+		const engine = Engine.create();  
+		const box = {
+			body: Bodies.rectangle(150, 0, 40, 40),
+			elem: links[0],
+			render() {
+				const {x, y} = this.body.position;
+				this.elem.style.top = `${y - 20}px`;
+				this.elem.style.left = `${x - 20}px`;
+				this.elem.style.transform = `rotate(${this.body.angle}rad)`;
+			},
+		};
+
+		const ground = Bodies.rectangle(
+			200, 200, 400, 120, {isStatic: true},
+		);
+
+		const mouse = Mouse.create(container)
+		const mouseConstraint = MouseConstraint.create(engine, {
+			mouse: mouse,
+			constraint: {
+				stiffness: 0.2,
+				render: {
+					visible: false
+				},
+			},
+		})
+
+		World.add(
+			engine.world, [box.body, ground, mouseConstraint]
+		);
+
+		(function rerender() {
+			box.render();
+			Engine.update(engine);
+			requestAnimationFrame(rerender);
+		})();
+	}
 
 	const chains = (element: HTMLElement) => {
 		// create engine
@@ -45,7 +96,6 @@
 		// add bodies
 		const group = Body.nextGroup(true);
 
-		const numLinks = 5
 
 		let itemWidth = 50
 		let itemHeight = 200
@@ -123,4 +173,31 @@
 	};
 </script>
 
-<div bind:this={container}></div>
+<div bind:this={container}>
+<div class="ground"></div>
+</div>
+
+<style>
+	div {
+		position: relative;
+		height: 100%;
+		width: 100%;
+		background: white;
+		margin: 0;
+	}
+
+	:global(.link-physics-body) {
+		position: absolute;
+		background: #111;
+		height: 40px;
+		width: 40px;
+		cursor: move;
+	}
+	.ground {
+		position: absolute;
+		background: #666;
+		top: 140px;
+		height: 120px;
+		width: 400px;
+		}
+</style>
