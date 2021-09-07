@@ -17,7 +17,7 @@
 </script>
 
 {#if visible}
-	<div class='container' on:click={onClick} transition:fly={{ y: -100, delay: 250, opacity: 1, duration: 1000, easing: bounceOut }}>
+	<div class='container' on:click={onClick} in:fly={{ y: -100, delay: 250, opacity: 1, duration: 1000, easing: bounceOut }}>
 		<div class='string'></div>
 		<div class='mic'>MIC</div>
 	</div>

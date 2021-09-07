@@ -3,11 +3,14 @@
 </script>
 
 <script lang='ts'>
+	import { goto } from '$app/navigation';
 	import CollectionPreview from '$lib/components/collections/CollectionPreview.svelte';
-	import Microphone from '$lib/components/Microphone.svelte';
+	import { Microphone } from '$lib/components';
 	import { takePicture } from '$lib/cross-platform';
-	import { collections } from '$lib/state';
+	import { getCollectionPreviews } from '$lib/state';
 	import { Spacer } from '@ollopa/cedar';
+
+	const collections = getCollectionPreviews()
 
 	const onMicrophoneClick = async () => {
 		throw new Error('TODO')
@@ -16,26 +19,33 @@
 	const onCameraClick = async () => {
 		const image = await takePicture()
 	}
+
+	const onCollectionClick = ({ detail: { id } }) => {
+		goto(`/collections/${id}`)
+	}
 </script>
 
-<Microphone on:click={onMicrophoneClick} />
+<route-main>
+	<Microphone on:click={onMicrophoneClick} />
 
-<button on:click={onCameraClick}>camera</button>
+	<button on:click={onCameraClick}>camera</button>
 
-<Spacer s={32} />
+	<Spacer s={32} />
 
-{#if $collections.state === 'loading'}
-	...loading
-{:else if $collections.state === 'ready'}
-	<section class="collections">
-		{#each $collections.data as collection, i}
-			<CollectionPreview 
-				{collection} 
-				transitionDelay={i * 250} 
-			/>
-		{/each}
-	</section>
-{/if}
+	{#if $collections.state === 'loading'}
+		...loading
+	{:else if $collections.state === 'ready'}
+		<section class="collections">
+			{#each $collections.data as collection, i}
+				<CollectionPreview 
+					on:click={onCollectionClick}
+					{collection} 
+					transitionDelay={i * 250} 
+				/>
+			{/each}
+		</section>
+	{/if}
+</route-main>
 
 <style>
 	section {

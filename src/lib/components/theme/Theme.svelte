@@ -67,9 +67,11 @@
         font-weight: var(--weightBolder);
     }
 
-    /* :global(section) {
-        background-color: var(--sectionBackgroundColor);
-    } */
+    /* Needed for routes where there is a send and recieve - prevents page jumping.  */
+    :global(route-main) {
+        position: absolute;
+        width: 100%;
+    }
 
     /**
     * Via Mozilla:

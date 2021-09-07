@@ -14,33 +14,74 @@ type ResourceState<Data, Error> = {
 	error: Error
 })
 
-export interface Collection {
-	title: string
-	imageUrl: string
+interface Topic {
+	id: string
+	name: string
 }
 
-export const collections: Readable<ResourceState<Collection[], string>> = (() => {
-	const { subscribe, set } = writable<ResourceState<Collection[], string>>({ state: 'loading' })
+export interface Collection {
+	id: string
+	name: string
+	imageUrl: string
+	topics: Topic[]
+}
+
+export type CollectionPreview = Pick<Collection, 'id' | 'imageUrl' | 'name'>
+
+const collectionsMockData: Collection[] = [
+	{
+		id: 'b',
+		name: 'felines',
+		imageUrl: 'felines.png',
+		topics: [],
+	},
+	{
+		id: 'a',
+		name: 'firetrucks',
+		imageUrl: 'firetrucks.png',
+		topics: [],
+	},
+]
+
+export const getCollectionPreviews = (): Readable<ResourceState<CollectionPreview[], string>> => {
+	const { subscribe, set } = writable<ResourceState<CollectionPreview[], string>>({ state: 'loading' })
 
 	const fetchData = async () => {
 		// perform some network request..
 		await wait(300)
+		return collectionsMockData
 	}
 
-	fetchData().then(_ => {
-		const collections: Collection[] = [
-			{
-				title: 'felines',
-				imageUrl: 'felines.png',
-			},
-			{
-				title: 'firetrucks',
-				imageUrl: 'firetrucks.png',
-			},
-		]
-
-		set({ state: 'ready', data: collections })
+	fetchData().then(data => {
+		set({ state: 'ready', data })
 	})
 
 	return { subscribe }
-})()
+}
+
+export const getCollection = (id: string): Readable<ResourceState<Collection, string>> => {
+	const { subscribe, set } = writable<ResourceState<Collection, string>>({ state: 'loading' })
+
+	const fetchData = async () => {
+		// perform some network request..
+		await wait(300)
+
+		const collection = collectionsMockData.find(c => c.id === id)
+
+		if (!collection) {
+			throw new Error(`Could not find collection ${id}.`)
+		}
+
+		return collection
+	}
+
+	fetchData()
+		.then(data => {
+			set({ state: 'ready', data })
+		})
+		.catch((error: Error) => {
+			set({ state: 'error', error: error.message })
+		})
+
+	return { subscribe }
+}
