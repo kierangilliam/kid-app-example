@@ -25,8 +25,6 @@
 </script>
 
 <route-main>
-	<Microphone on:click={onMicrophoneClick} />
-
 	<button on:click={onCameraClick}>camera</button>
 
 	<Spacer s={32} />
@@ -44,6 +42,8 @@
 			{/each}
 		</section>
 	{/if}
+
+	<Microphone on:click={onMicrophoneClick} />
 </route-main>
 
 <style>
