@@ -237,7 +237,7 @@
 		right: 0;
 		bottom: 0;
 		pointer-events: none;
-		background-color: rgb(22, 0, 31);
+		background-color: rgb(22, 1, 29);
 	}
 
 	canvas {

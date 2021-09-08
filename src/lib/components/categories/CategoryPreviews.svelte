@@ -26,7 +26,7 @@
 	section {
 		margin: var(--s-8);
 		padding: var(--s-6);
-		background: rgba(242, 200, 76, 0.2);
+		background: rgba(242, 200, 76, 0.3);
 		transform: skew(1deg);
 		background-blend-mode:multiply;
 	}

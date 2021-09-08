@@ -13,7 +13,7 @@ const BASE = {
 
     blue: '#0B90FF',
 
-    yellow: '#dcaf2e',
+    yellow: '#F2C94C',
 }
 
 const ATOM_COLORS = {

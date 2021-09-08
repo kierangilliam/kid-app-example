@@ -1,9 +1,10 @@
 <script lang='ts'>
-	import { fade } from 'svelte/transition';
-	import { page } from '$app/stores';
-	import { getCategory } from '$lib/state';
-	import BackButton from '$lib/components/BackButton.svelte';
-	import TopicsArea from './__components/TopicsArea.svelte';
+	import { fade, fly } from 'svelte/transition'
+	import { page } from '$app/stores'
+	import { getCategory } from '$lib/state'
+	import BackButton from '$lib/components/BackButton.svelte'
+	import TopicsArea from './_components/TopicsArea.svelte'
+	import { cubicOut } from 'svelte/easing'
 
 	$: id = $page.params.category
 	$: category = getCategory(id)
@@ -32,7 +33,7 @@
 			</div>
 		</div>
 
-		<div class='video'>
+		<div class='video' in:fly={{ x: 1000, duration: 1000, easing: cubicOut }}>
 			<!-- svelte-ignore a11y-media-has-caption -->
 			<video muted autoplay={true}>
 				<source src='/felines/lions.mp4' type='video/mp4' />
@@ -88,6 +89,7 @@
 		height: 100vh;
 		width: 40vw;
 		box-shadow: var(--shadow-3);
+		background: var(--darkGray);
 	}
 	.video video {
 		object-fit: cover;
