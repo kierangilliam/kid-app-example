@@ -7,18 +7,21 @@
 	import { clamp } from '$lib/utils'
 	import { quintOut } from 'svelte/easing'
 	import { Spacer } from '@ollopa/cedar'
+	import { getContext } from 'svelte'
 
 	export let topics: Topic[]
 
 	const offset = tweened(0, { easing: quintOut })
 	const velocityThreshold = 1
 	const panThreshold = 200
+	const scroll = getContext('scroll-lock')
 
 	let width: number
 	let topicsArea: HTMLElement
 	let offsetStart = 0
 
 	const handleMoveStart = _ => {
+		scroll.lock()
 		offsetStart = $offset
 	}
 
@@ -28,6 +31,8 @@
 	}
 
 	const handleMoveEnd: GestureCallback = e => {
+		scroll.unlock()
+
 		// Only change the view if it was a big swipe
 		if (e.velocityX < -velocityThreshold || e.deltaX < -panThreshold) {
 			$offset = -(width / 2)
@@ -120,7 +125,7 @@
 		justify-content: center;
 		align-items: flex-start;
 		color: var(--white);
-		max-width: 20rem;
+		max-width: 15rem;
 	}
 	.topic .details p {
 		margin-top: var(--s-4);

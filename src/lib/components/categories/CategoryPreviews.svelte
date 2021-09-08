@@ -25,9 +25,9 @@
 <style>
 	section {
 		margin: var(--s-8);
-		padding: var(--s-6);
-		background: rgba(242, 200, 76, 0.3);
-		transform: skew(1deg);
+		padding: var(--s-12) var(--s-2);
+		background: rgba(242, 200, 76, 0.15);
+		transform: skew(2deg);
 	}
 
 	.categories {

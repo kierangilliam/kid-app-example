@@ -3,16 +3,24 @@
 </script>
 
 <script lang='ts'>
-	import { goto } from '$app/navigation';
-	import { StarfieldBackground, Microphone, CategoryPreviews, Camera, VizzTitle } from '$lib/components';
-	import { takePicture } from '$lib/cross-platform';
-	import { getCategoryPreviews } from '$lib/state';
-	import { setAnimationContext } from '$lib/utils';
-	import { Spacer } from '@ollopa/cedar';
-	import { onDestroy } from 'svelte';
+	import { goto } from '$app/navigation'
+	import { StarfieldBackground, Microphone, CategoryPreviews, Camera, VizzTitle } from '$lib/components'
+	import { takePicture } from '$lib/cross-platform'
+	import { getCategoryPreviews } from '$lib/state'
+	import { setAnimationContext } from '$lib/utils'
+	import { Spacer } from '@ollopa/cedar'
+	import { onDestroy, setContext } from 'svelte'
+	import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 
 	const animationId = setAnimationContext()
 	const categories = getCategoryPreviews()
+
+	setContext('scroll-lock', {
+		lock: () => disableBodyScroll(routeElement),
+		unlock: () => enableBodyScroll(routeElement),
+	})
+	
+	let routeElement: HTMLElement
 
 	onDestroy(() => {
 		cancelAnimationFrame($animationId)
@@ -33,7 +41,7 @@
 
 <StarfieldBackground />
 
-<route-main>
+<route-main bind:this={routeElement}>
 	<VizzTitle />
 
 	<!-- Make room for Camera and Microphone -->

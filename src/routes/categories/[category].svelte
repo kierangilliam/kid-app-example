@@ -5,9 +5,18 @@
 	import BackButton from '$lib/components/BackButton.svelte'
 	import TopicsArea from './_components/TopicsArea.svelte'
 	import { cubicOut } from 'svelte/easing'
+	import { setContext } from 'svelte'
+	import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 
 	$: id = $page.params.category
 	$: category = getCategory(id)
+
+	let contentElement: HTMLElement
+
+	setContext('scroll-lock', {
+		lock: () => disableBodyScroll(contentElement),
+		unlock: () => enableBodyScroll(contentElement),
+	})
 </script>
 
 <route-main>
@@ -21,7 +30,7 @@
 			<BackButton back={'/'} />
 		</div>
 
-		<div class='content'>
+		<div class='content' bind:this={contentElement}>
 			<div class='title' in:fade>
 				<img src={$category.data?.imageUrl} alt=''>
 
@@ -65,7 +74,7 @@
 		display: grid; 
 		grid-template-columns: 1fr; 
 		grid-template-rows: 0.2fr 1.8fr; 
-		row-gap: var(--s-8);
+		row-gap: var(--s-6);
 		grid-template-areas: '.' '.'; 
 		overflow-y: scroll;
 	}

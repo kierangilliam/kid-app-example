@@ -58,6 +58,7 @@
 
 	.name {
 		margin-top: var(--s-6);
+		transform: skew(-8deg);
 	}
 
 	h2 {

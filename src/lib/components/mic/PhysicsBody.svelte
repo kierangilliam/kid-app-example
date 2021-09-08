@@ -2,7 +2,7 @@
 
 <script lang='ts'>
 	import { Composites, World, Composite, Constraint, MouseConstraint, Engine, Mouse, Bodies, Body } from 'matter-js'
-	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte';
 	import { getAnimationContext, range } from '$lib/utils';
 
 	export let numberOfLinks: number
@@ -12,6 +12,8 @@
 	const dispatch = createEventDispatcher()
 	const { register } = getAnimationContext()
 
+	const scroll = getContext('scroll-lock')
+
 	let container: HTMLElement
 	let links: HTMLElement[]
 	let windowWidth: number
@@ -19,12 +21,22 @@
 	$: updateLinkColors(linkColor)
 
 	onMount(() => {
+		const routeMain = document.querySelector('route-main')
+
 		links = range(numberOfLinks).map((_, i) => {
 			const link = document.createElement('div')
 
 			link.style.width = `${linkSize}px`
 			link.style.height = `${linkSize / 6}px`
 			link.classList.add('link-physics-body')
+
+			link.addEventListener('pointerup', () => {
+				scroll.unlock(routeMain)
+			})
+
+			link.addEventListener('pointerdown', () => {
+				scroll.lock(routeMain)
+			})
 
 			container.appendChild(link)
 			
@@ -43,10 +55,10 @@
 
 				link.addEventListener('pointerup', () => {
 					dispatch('pointerup')
+
 				})
 
 				link.addEventListener('pointerdown', () => {
-					console.log('down')
 					dispatch('pointerdown')
 				})
 			}
@@ -96,7 +108,7 @@
 
 		const linkBodies = []
 			
-		const rope = Composites.stack(windowWidth * .75, 0, numberOfLinks, 1, 0, 0, (x, y, i) => {
+		const rope = Composites.stack(windowWidth * .85, 0, numberOfLinks, 1, 0, 0, (x, y, i) => {
 			let chainLink: Body
 
 			if (i == numberOfLinks - 1) {
@@ -131,8 +143,9 @@
 	}
 
 	const initializeMouse = (engine: Engine) => {
+		const mouse = Mouse.create(document.body)
 		const mouseConstraint = MouseConstraint.create(engine, {
-			mouse: Mouse.create(document.body),
+			mouse,
 			constraint: {
 				stiffness: 0.2,
 				render: {
@@ -140,6 +153,9 @@
 				},
 			},
 		})
+
+		mouseConstraint.mouse.element.removeEventListener("mousewheel", mouseConstraint.mouse.mousewheel);
+		mouseConstraint.mouse.element.removeEventListener("DOMMouseScroll", mouseConstraint.mouse.mousewheel);
 
 		World.add(engine.world, [mouseConstraint])
 	}
