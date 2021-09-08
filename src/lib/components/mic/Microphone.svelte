@@ -49,18 +49,20 @@
 
 {#if transcription}
 	<div class='transcription'>
-		{#each transcription.split(' ') as word, i}
-			<div transition:fly={{ y: -20, x: 5, delay: i * 50 }}>
-				{word}
-			</div>
-		{/each}
+		<div transition:fly={{ y: -50 }}>
+			{#each transcription.split(' ') as word, i}
+				<span transition:fly={{ y: -20, x: 5, delay: i * 50 }}>
+					{word}
+				</span>
+			{/each}
+		</div>
 	</div>
 {/if}
 
 <MicrophonePhysicsBody 
 	linkSize={40}
 	numberOfLinks={4}
-	linkColor={transcribing ? COLORS.white : '#DADADA'}
+	linkColor={transcribing ? COLORS.yellow : '#DADADA'}
 	on:pointerup={onUp} 
 	on:pointerdown={onDown} 
 />
@@ -69,14 +71,18 @@
 	.transcription {
 		position: absolute;
 		width: 100%;
-		top: 0;
+		top: var(--viewPaddingTop);
 		display: flex;
 		justify-content: center;
-		font-weight: var(--weightBolder);
-		font-size: var(--h1);
-		color: var(--white);
 	}
 	.transcription div {
-		margin: 0 var(--s-1);
+		position: relative;
+		display: inline-block;
+		background: var(--white);
+		font-weight: var(--weightBolder);
+		font-size: var(--h1);
+		color: var(--black);
+		padding: var(--s-3) var(--s-4);
+		box-shadow: var(--shadow-3);
 	}
 </style>

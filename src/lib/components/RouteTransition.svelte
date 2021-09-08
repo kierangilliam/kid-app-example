@@ -5,10 +5,7 @@
 </script>
   
 {#key refresh}
-	<div 
-		in:fade={{  duration: 500, }}
-		out:fade={{ duration: 500, }}
-	>
+	<div out:fade={{ duration: 500, }}>
 		<slot />
 	</div>
 {/key}

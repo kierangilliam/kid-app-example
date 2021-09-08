@@ -11,7 +11,7 @@
 	export let topics: Topic[]
 
 	const offset = tweened(0, { easing: quintOut })
-	const velocityThreshold = 3
+	const velocityThreshold = 1
 	const panThreshold = 200
 
 	let width: number
@@ -24,7 +24,7 @@
 
 	const handleMove: GestureCallback = (e) => {
 		// The +10/-10 gives a rubber banding effect similar to iOS
-		$offset = clamp($offset + e.deltaX, -(width / 2) - 10, 10)
+		$offset = clamp(offsetStart + e.deltaX, -(width / 2) - 10, 10)
 	}
 
 	const handleMoveEnd: GestureCallback = e => {
@@ -103,6 +103,7 @@
 
 	.topic {
 		display: grid;
+		max-height: 30vh;
 		grid-template-columns: 2fr 3fr;
 		column-gap: var(--s-6);
 	}

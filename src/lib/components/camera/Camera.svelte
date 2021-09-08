@@ -34,7 +34,7 @@
 <style>
 	.wrapper {
 		position: absolute;
-		top: var(--s-4);
+		top: calc(var(--s-4) + var(--viewPaddingTop));
 		left: 10vw;
 		z-index: var(--z-index);
 		width: var(--size);

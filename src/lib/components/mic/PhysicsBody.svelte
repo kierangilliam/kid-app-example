@@ -12,7 +12,7 @@
 	const dispatch = createEventDispatcher()
 	const { register } = getAnimationContext()
 
-	let container
+	let container: HTMLElement
 	let links: HTMLElement[]
 	let windowWidth: number
 
@@ -33,7 +33,13 @@
 				img.src = 'mic.png'
 				img.style.width = `${linkSize}px`
 				img.draggable = false
-				link.appendChild(img)
+
+				const imageWrapper = document.createElement('div')
+				imageWrapper.style.width = `${linkSize}px`
+				imageWrapper.style.height = `${linkSize}px`
+
+				imageWrapper.append(img)
+				link.appendChild(imageWrapper)
 
 				link.addEventListener('pointerup', () => {
 					dispatch('pointerup')
@@ -144,13 +150,11 @@
 <style>
 	:global(.link-physics-body) {
 		position: absolute;
-		border: 2px solid var(--darkerGray);
 		cursor: move;
 		pointer-events: all;
 	}
 
 	:global(.link-physics-body:last-of-type) {
 		background: transparent;
-		border: none;
 	}
 </style>

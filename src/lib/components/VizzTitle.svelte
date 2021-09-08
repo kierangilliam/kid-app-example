@@ -29,7 +29,7 @@
 	.wrapper {
 		position: absolute;
 		width: 100%;
-		top: var(--s-12);
+		top: calc(var(--s-6) + var(--viewPaddingTop));
 		display: flex;
 		justify-content: center;
 		pointer-events: none;

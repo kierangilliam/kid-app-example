@@ -31,16 +31,16 @@
 	}
 </script>
 
-<route-main>
-	<StarfieldBackground />
+<StarfieldBackground />
 
+<route-main>
 	<VizzTitle />
 
 	<!-- Make room for Camera and Microphone -->
 	<Spacer s={48} />
 
 	{#if $categories.state === 'loading'}
-		...loading
+		<!-- Space for a ghost component / some indicator -->
 	{:else if $categories.state === 'ready'}
 		<CategoryPreviews categories={$categories.data} on:pointerup={onCategoryClick} />
 	{/if}
