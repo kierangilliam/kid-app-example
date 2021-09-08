@@ -14,9 +14,11 @@ type ResourceState<Data, Error> = {
 	error: Error
 })
 
-interface Topic {
+export interface Topic {
 	id: string
 	name: string
+	imageUrl: string
+	description: string
 }
 
 export interface Category {
@@ -26,48 +28,67 @@ export interface Category {
 	topics: Topic[]
 }
 
-export type CollectionPreview = Pick<Category, 'id' | 'imageUrl' | 'name'>
+export type CategoryPreview = Pick<Category, 'id' | 'imageUrl' | 'name'>
 
-const collectionsMockData: Category[] = [
+const categoriesMockData: Category[] = [
+	{
+		id: 'a',
+		name: 'felines',
+		imageUrl: '/cat.png',
+		topics: [
+			{
+				id: 'a',
+				imageUrl: '/felines/lion.jpeg',
+				name: 'Big Cats',
+				description: 'Meet the kings of the animal kingdom\'s.', 
+			},
+			{
+				id: 'b',
+				imageUrl: '/felines/egypt-cat.jpeg',
+				name: 'Cats & Egypt',
+				description: 'What\'s up with Egyptians and their love of cats?', 
+			},
+			{
+				id: 'c',
+				imageUrl: '/felines/snow-cat.jpeg',
+				name: 'Cool Cats',
+				description: 'Discover cats who like cold climates.', 
+			},
+		],
+	},
 	{
 		id: 'b',
-		name: 'felines',
-		imageUrl: 'cat.png',
-		topics: [],
-	},
-	{
-		id: 'a',
 		name: 'firetrucks',
-		imageUrl: 'firetruck.png',
+		imageUrl: '/firetruck.png',
 		topics: [],
 	},
 	{
-		id: 'a',
+		id: 'c',
 		name: 'technology',
-		imageUrl: 'computer.png',
+		imageUrl: '/computer.png',
 		topics: [],
 	},
 	{
-		id: 'a',
+		id: 'd',
 		name: 'dinosaurs',
-		imageUrl: 'dinosaur.png',
+		imageUrl: '/dinosaur.png',
 		topics: [],
 	},
 	{
-		id: 'a',
+		id: 'e',
 		name: 'science',
-		imageUrl: 'flask.png',
+		imageUrl: '/flask.png',
 		topics: [],
 	},
 ]
 
-export const getCategoryPreviews = (): Readable<ResourceState<CollectionPreview[], string>> => {
-	const { subscribe, set } = writable<ResourceState<CollectionPreview[], string>>({ state: 'loading' })
+export const getCategoryPreviews = (): Readable<ResourceState<CategoryPreview[], string>> => {
+	const { subscribe, set } = writable<ResourceState<CategoryPreview[], string>>({ state: 'loading' })
 
 	const fetchData = async () => {
 		// perform some network request..
 		await wait(300)
-		return collectionsMockData
+		return categoriesMockData
 	}
 
 	fetchData().then(data => {
@@ -84,13 +105,13 @@ export const getCategory = (id: string): Readable<ResourceState<Category, string
 		// perform some network request..
 		await wait(300)
 
-		const collection = collectionsMockData.find(c => c.id === id)
+		const category = categoriesMockData.find(c => c.id === id)
 
-		if (!collection) {
-			throw new Error(`Could not find collection ${id}.`)
+		if (!category) {
+			throw new Error(`Could not find category ${id}.`)
 		}
 
-		return collection
+		return category
 	}
 
 	fetchData()

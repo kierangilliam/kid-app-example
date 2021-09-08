@@ -4,6 +4,9 @@ export const wait = async (ms: number): Promise<void> =>
 		setTimeout(resolve, ms)
 	})
 
+export const clamp = (num: number, min: number, max: number): number => 
+	Math.min(Math.max(num, min), max)
+
 export const dedupe = <T>(array: T[]): T[] => {
 	return [...new Set(array)]
 }

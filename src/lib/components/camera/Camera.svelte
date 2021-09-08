@@ -1,6 +1,8 @@
 <script lang='ts'>
+	import { getAnimationContext } from '$lib/utils'
 	import { createEventDispatcher, onMount } from 'svelte'
 
+	const { register } = getAnimationContext()
 	const dispatch = createEventDispatcher()
 
 	let camera: HTMLDivElement
@@ -9,22 +11,22 @@
 		const magnitude = 15
 		const slowdown = 1000
 
-		const animateFigure8 = () => {
-			if (!camera) return
-			const t = Date.now() / slowdown
-			camera.style.left = (Math.cos(t)) * magnitude + 'px'
+		const animateFigure8 = (time) => {
+			const t = time / slowdown
+			const cosT = Math.cos(t)
+			camera.style.left = cosT * magnitude + 'px'
 			camera.style.top = (Math.sin(2 * t) / 2) * magnitude + 'px'
-			camera.style.transform = `rotate(${(Math.cos(t)) * (0.5 * magnitude)}deg)`
+			camera.style.transform = `rotate(${cosT * 0.5 * magnitude}deg)`
 		}
-		
-		setInterval(() => {
-			requestAnimationFrame(animateFigure8)
-		}, 150)
+
+		register('camera', time => {
+			animateFigure8(time)
+		})
 	})
 </script>
 
 <div class='wrapper'>
-	<div on:click={() => dispatch('click')} bind:this={camera} class='container'>
+	<div on:pointerup={() => dispatch('pointerup')} bind:this={camera} class='container'>
 		<img src='/camera.png' alt='camera'>
 	</div>
 </div>
@@ -48,10 +50,7 @@
 	}
 
 	.container {
-		width: 100%;
-		height: 100%;
-		transform: translate(-15%, -51%);
-		/* transition: transform 250ms ease-in-out, left 250ms ease-in, top 250ms ease-out; */
 		transition: all 250ms ease-out;
+		cursor: pointer;
 	}
 </style>

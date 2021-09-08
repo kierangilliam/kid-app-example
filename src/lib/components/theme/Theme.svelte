@@ -21,6 +21,7 @@
         height: 100vh;
         font-family: var(--bodyFont);   
         background: var(--backgroundColor);
+        overflow: scroll;
     }
 
     :global(.theme) {
@@ -39,19 +40,16 @@
         --lineThicker: 4.5px solid var(--lightLineColor);
         --hairline: 1px solid var(--hairLineColor);
 
-        /* Shadows */
-        --whiteOutline: -8px -8px 4px 0px rgba(255, 255, 255, 1),
-            8px -8px 4px 0px rgba(255, 255, 255, 1),
-            -8px 8px 4px 0px rgba(255, 255, 255, 1),
-            8px 8px 4px 0px rgba(255, 255, 255, 1);
-
-
         /* Typography */
         --headingFont: 'Open Sans', serif;
         --bodyFont: 'Open Sans', sans-serif;
         --weightMedium: 500;
         --weightBold: 600;
         --weightBolder: 700;
+
+        /* Shadows */
+        --shadow-1: -4px -4px 8px rgba(12, 12, 12, 0.4);
+        --shadow-3: -4px -4px 12px rgba(12, 12, 12, 0.7);
      
         /* Minor Third */        
         --h1: 1.802rem;
@@ -67,22 +65,52 @@
         font-weight: var(--weightBolder);
     }
 
-    /* Needed for routes where there is a send and recieve - prevents page jumping.  */
-    :global(route-main) {
-        position: absolute;
-        width: 100%;
+    @supports(padding: max(0px)) {
+        :global(:root) {
+            --viewPaddingTop: max(env(safe-area-inset-top), var(--s-8));
+            --viewPaddingBottom: max(env(safe-area-inset-bottom), var(--s-8));            
+            --viewPaddingLeft: max(env(safe-area-inset-left), var(--s-4));
+            --viewPaddingRight: max(env(safe-area-inset-right), var(--s-4));
+        }
     }
 
+    /* Needed for routes where there is a send and recieve - prevents page jumping.  */
+    :global(route-main) {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        padding-top: var(--viewPaddingTop);
+        padding-bottom: var(--viewPaddingBottom);
+        padding-left: var(--viewPaddingLeft);
+        padding-right: var(--viewPaddingRight);
+    }
+
+    :global(img) {
+        -webkit-touch-callout: none;
+        pointer-events: none;
+    }
+
+    /* Disable text selection */
+    :global(*) {
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
     /**
+    * ...but keep it for inputs
     * Via Mozilla:
     *   The user-select CSS property controls whether the user can select text. 
     *   This doesn't have any effect on content loaded as chrome, except in textboxes.
     */
-    /* :global(input, textarea) {
+    :global(input, textarea) {
         -webkit-user-select: auto !important;
         -khtml-user-select: auto !important;
         -moz-user-select: auto !important;
         -ms-user-select: auto !important;
         user-select: auto !important;
-    } */
+    }
 </style>

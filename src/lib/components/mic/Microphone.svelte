@@ -2,14 +2,17 @@
 	import { fly } from 'svelte/transition';
 	import MicrophonePhysicsBody from './PhysicsBody.svelte';
 	import { COLORS } from '$lib/constants';
+	import { createEventDispatcher } from 'svelte';
 
-	let transcription = ''
-	let transcribing = false
-
+	const dispatch = createEventDispatcher()
 	const SpeechRecognition: typeof window.SpeechRecognition = window.SpeechRecognition 
 		// @ts-ignore
 		|| window.webkitSpeechRecognition
 	const recognition = new SpeechRecognition()
+
+	let transcription = ''
+	let transcribing = false
+
 	recognition.interimResults = true
 
 	recognition.onaudiostart = (e) => {
@@ -20,13 +23,14 @@
 	recognition.onspeechend = (e) => {
 		transcribing = false
 
-		// NOTE: where `dispatch('question', { transcription })` would be called
+		dispatch('question', { question: transcription })
 
 		setTimeout(() => transcription = '', 2000)
 	}
 
 	recognition.onresult = (e) => {
 		const { confidence, transcript } = e.results[e.resultIndex][0]
+
 		console.log('transcriptin confidence', confidence)
 		transcription = transcript
 		
@@ -56,7 +60,7 @@
 <MicrophonePhysicsBody 
 	linkSize={40}
 	numberOfLinks={4}
-	linkColor={transcribing ? COLORS.white : COLORS.black}
+	linkColor={transcribing ? COLORS.white : '#DADADA'}
 	on:pointerup={onUp} 
 	on:pointerdown={onDown} 
 />

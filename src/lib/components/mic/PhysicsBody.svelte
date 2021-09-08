@@ -1,19 +1,19 @@
 <svelte:window bind:innerWidth={windowWidth} />
 
 <script lang='ts'>
-	import { Composites, World, Composite, Constraint, MouseConstraint, Engine, Body, Mouse, Bodies,  } from 'matter-js'
+	import { Composites, World, Composite, Constraint, MouseConstraint, Engine, Mouse, Bodies, Body } from 'matter-js'
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-	import { range } from '$lib/utils';
+	import { getAnimationContext, range } from '$lib/utils';
 
 	export let numberOfLinks: number
 	export let linkSize: number
 	export let linkColor: string
 
 	const dispatch = createEventDispatcher()
+	const { register } = getAnimationContext()
 
-	let container = document.body
+	let container
 	let links: HTMLElement[]
-	let animationFrameId: number
 	let windowWidth: number
 
 	$: updateLinkColors(linkColor)
@@ -40,32 +40,28 @@
 				})
 
 				link.addEventListener('pointerdown', () => {
+					console.log('down')
 					dispatch('pointerdown')
 				})
 			}
 
-			updateLinkColors(linkColor)
-
 			return link
 		})
+
+		updateLinkColors(linkColor)
 
 		const engine = Engine.create()
 		const renderLinks = initializeLinks(engine, links)
 
 		initializeMouse(engine)
 
-		const render = () => {
+		register('mic physics body', () => {
 			renderLinks()
-			Engine.update(engine);
-			animationFrameId = requestAnimationFrame(render);
-		}
-
-		render()
+			Engine.update(engine)
+		})
 	})
 
 	onDestroy(() => {
-		cancelAnimationFrame(animationFrameId)
-
 		links.forEach(link => container.removeChild(link))
 	})
 
@@ -73,8 +69,9 @@
 		if (!links) return
 
 		links.forEach((link, i) => {
-			if (i != numberOfLinks -1)
+			if (i != numberOfLinks - 1) {
 				link.style.background = linkColor
+			}
 		})
 	}
 
@@ -129,7 +126,7 @@
 
 	const initializeMouse = (engine: Engine) => {
 		const mouseConstraint = MouseConstraint.create(engine, {
-			mouse: Mouse.create(container),
+			mouse: Mouse.create(document.body),
 			constraint: {
 				stiffness: 0.2,
 				render: {
@@ -142,15 +139,18 @@
 	}
 </script>
 
+<div class="container" bind:this={container}></div>
+
 <style>
 	:global(.link-physics-body) {
 		position: absolute;
-		background: #111;
+		border: 2px solid var(--darkerGray);
 		cursor: move;
 		pointer-events: all;
 	}
 
 	:global(.link-physics-body:last-of-type) {
 		background: transparent;
+		border: none;
 	}
 </style>
